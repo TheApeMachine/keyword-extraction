@@ -1,3 +1,7 @@
+# Based on the PyTorch tutorial for translation.
+# Original code by: Sean Robertson
+#                   https://github.com/spro/practical-pytorch
+
 from __future__ import unicode_literals, print_function, division
 from io import open
 import unicodedata
