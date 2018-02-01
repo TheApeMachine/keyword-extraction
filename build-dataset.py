@@ -23,7 +23,7 @@ def spider(name, found_titles, url, found):
             print(title)
             print(cleaned_keywords)
 
-            f = open('keyword_data.txt', 'a')
+            f = open('keyword-data.txt', 'a')
             f.write(
                 title + "\t" + ' '.join(
                     k.replace(' ', '_') for k in cleaned_keywords
