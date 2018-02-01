@@ -377,7 +377,7 @@ def output_evaluation(input_sentence):
 
 while(True):
     try:
-        inp = input(">")
+        inp = raw_input(">")
         output_evaluation(inp)
     except KeyError:
         pass
