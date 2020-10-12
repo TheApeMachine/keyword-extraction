@@ -188,7 +188,8 @@ class AttnDecoderRNN(nn.Module):
             return result
 
 def indexes_from_sentence(lang, sentence):
-    return [lang.word2index[word] for word in sentence.split(' ')]
+    sent_spl = sentence.split(' ')
+    return [lang.word2index[word] for word in sent_spl if word in lang.word2index]
 
 def variable_from_sentence(lang, sentence):
     indexes = indexes_from_sentence(lang, sentence)
@@ -259,7 +260,7 @@ def train(input_variable, target_variable, encoder, decoder, encoder_optimizer, 
     encoder_optimizer.step()
     decoder_optimizer.step()
 
-    return loss.data[0] / target_length
+    return loss.data.item() / target_length
 
 import time
 import math
@@ -313,7 +314,7 @@ def evaluate(encoder, decoder, sentence, max_length=MAX_LENGTH):
     input_length    = input_variable.size()[0]
     encoder_hidden  = encoder.init_hidden()
     encoder_outputs = Variable(torch.zeros(max_length, encoder.hidden_size))
-    encoder_outputs = encoder_ouputs.cuda() if use_cuda else encoder_ouputs
+    encoder_outputs = encoder_outputs.cuda() if use_cuda else encoder_outputs
 
     for ei in range(input_length):
         encoder_output, encoder_hidden = encoder(input_variable[ei], encoder_hidden)
@@ -338,12 +339,13 @@ def evaluate(encoder, decoder, sentence, max_length=MAX_LENGTH):
             decoded_words.append('<EOS>')
             break
         else:
-            decoded_words.append(output_lang.index2word[ni])
+            decoded_words.append(output_lang.index2word[ni.item()])
 
         decoder_input = Variable(torch.LongTensor([[ni]]))
         decoder_input = decoder_input.cuda() if use_cuda else decoder_input
 
     return decoded_words, decoder_attentions[:di + 1]
+
 
 hidden_size = 256
 
@@ -367,6 +369,7 @@ else:
     encoder1      = torch.load('encoder.pt')
     attn_decoder1 = torch.load('decoder.pt')
 
+
 def output_evaluation(input_sentence):
     output_words, attentions = evaluate(
         encoder1, attn_decoder1, input_sentence
@@ -375,9 +378,10 @@ def output_evaluation(input_sentence):
     print("input  = ", input_sentence)
     print("output = ", ' '.join(output_words))
 
+
 while(True):
     try:
-        inp = raw_input(">")
+        inp = input(">")
         output_evaluation(inp)
     except KeyError:
         pass
