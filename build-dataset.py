@@ -33,7 +33,7 @@ def spider(name, found_titles, url, found):
 
             for a in soup.select('a[href]'):
                 b = a['href'].replace('#replies', '')
-                if 'http://' + name + '.com' in b and b not in found:
+                if 'https://' + name + '.com' in b and b not in found:
                     found.append(b)
                     spider(name, found_titles, b, found)
 
